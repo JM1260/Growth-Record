@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { posts } from '../../data/posts';
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="文章｜向光生长" description="关于学习、行动、创造和生活的成长笔记。">
+  <section class="shell page-hero">
+    <span class="eyebrow">Field Notes</span>
+    <h1>沿途笔记。</h1>
+    <p>记录实践之后留下的经验，不追求标准答案，只分享目前真正有效的方法和仍在思考的问题。</p>
+  </section>
+  <section class="shell article-list section-tight section">
+    {posts.map((post) => (
+      <a class="article-card" href={`${base}posts/${post.slug}/`}>
+        <div class="meta"><span>{post.category}</span><span>{post.date}</span></div>
+        <h2>{post.title}</h2>
+        <p>{post.excerpt}</p>
+        <span class="read">阅读 · {post.readTime} →</span>
+      </a>
+    ))}
+  </section>
+</BaseLayout>
+
