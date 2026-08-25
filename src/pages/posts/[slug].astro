@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { posts } from '../../data/posts';
+
+export function getStaticPaths() {
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title={`${post.title}｜向光生长`} description={post.excerpt}>
+  <article class="article">
+    <header class="article-header">
+      <a href={`${base}posts/`} class="eyebrow">返回文章</a>
+      <h1>{post.title}</h1>
+      <p class="article-lead">{post.lead}</p>
+      <div class="mt-6 flex gap-4 text-sm text-stone-500"><span>{post.category}</span><span>·</span><span>{post.date}</span><span>·</span><span>{post.readTime}</span></div>
+    </header>
+    <div class="article-body">
+      {post.sections.map((section) => (
+        <section>
+          <h2>{section.heading}</h2>
+          {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+        </section>
+      ))}
+      <aside class="article-note">{post.note}</aside>
+    </div>
+  </article>
+</BaseLayout>
+
