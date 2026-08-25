@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const roadmap = [
+  { no: '01', title: '稳定自己的节奏', text: '建立睡眠、运动、阅读与每周复盘四个基础锚点。', tags: ['12 周', '已完成', '生活系统'], done: true },
+  { no: '02', title: '构建学习工作流', text: '从收集信息转向提出问题，以项目驱动学习和输出。', tags: ['8 周', '已完成', '学习方法'], done: true },
+  { no: '03', title: '形成个人方法论', text: '从重复实践中提炼原则，持续写作并接受真实世界的反馈。', tags: ['进行中', '本季度', '公开输出'] },
+  { no: '04', title: '创造有用的产品', text: '围绕真实需求，把能力组合成能被使用、分享与迭代的作品。', tags: ['下一站', '项目', '产品思维'] },
+  { no: '05', title: '建立长期连接', text: '聚集同路人，在相互启发和协作中扩大成长的半径。', tags: ['长期', '社群', '影响力'] },
+];
+---
+
+<BaseLayout title="成长路线｜向光生长" description="一条从稳定内核、积累能力到创造连接的个人成长路线。">
+  <section class="shell page-hero">
+    <span class="eyebrow">My Roadmap</span>
+    <h1>把远方拆成<br />今天的一小步。</h1>
+    <p>路线不是必须遵守的轨道，而是一组可被验证、修正和重新选择的假设。每完成一段，都留下成果和反思。</p>
+  </section>
+  <section class="shell roadmap-list section-tight section">
+    {roadmap.map((item) => (
+      <article class:list={['roadmap-item', { done: item.done }]}>
+        <span class="roadmap-index">{item.no}</span>
+        <div><h2>{item.title}</h2><p>{item.text}</p></div>
+        <div class="roadmap-tags">{item.tags.map((tag) => <span class="tag">{tag}</span>)}</div>
+      </article>
+    ))}
+  </section>
+</BaseLayout>
+
