@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { posts } from '../data/posts';
+
+const base = import.meta.env.BASE_URL;
+const stages = [
+  { no: '01', title: '建立内核', text: '重新认识自己，建立稳定的能量、时间与行动系统。', meta: '习惯 · 专注 · 复盘' },
+  { no: '02', title: '积累能力', text: '把好奇心变成作品，让知识从“知道”走向“做到”。', meta: '学习 · 输出 · 项目' },
+  { no: '03', title: '创造连接', text: '找到同路的人，用真实表达建立长期而有温度的连接。', meta: '分享 · 社群 · 影响' },
+];
+---
+
+<BaseLayout>
+  <section class="shell hero">
+    <div>
+      <span class="eyebrow">一场长期主义的实验</span>
+      <h1>把成长，<br />走成一条<em>路</em>。</h1>
+      <p class="hero-copy">这里记录一个普通人的学习、创造与生活。没有速成公式，只有真实行动留下的坐标。</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href={`${base}roadmap/`}>查看成长路线 <span>→</span></a>
+        <a class="button button-secondary" href={`${base}posts/`}>阅读最新文章</a>
+      </div>
+    </div>
+    <div class="route-card" aria-label="成长路线当前进度">
+      <div class="route-top">
+        <span class="route-label">2026 成长坐标</span>
+        <span class="route-percent">68%</span>
+      </div>
+      <div class="route-line"></div>
+      <div class="route-steps">
+        <div class="route-step done"><span class="route-dot">✓</span><div><strong>建立稳定系统</strong><span>已完成 · 12 周</span></div></div>
+        <div class="route-step done"><span class="route-dot">✓</span><div><strong>持续输出作品</strong><span>已完成 · 8 个项目</span></div></div>
+        <div class="route-step active"><span class="route-dot">3</span><div><strong>形成个人方法</strong><span>进行中 · 本季度重点</span></div></div>
+        <div class="route-step"><span class="route-dot">4</span><div><strong>创造长期价值</strong><span>下一站</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell stats" aria-label="成长数据">
+    <div class="stat"><strong>126</strong><span>天持续记录</span></div>
+    <div class="stat"><strong>48</strong><span>篇公开笔记</span></div>
+    <div class="stat"><strong>08</strong><span>个完成项目</span></div>
+    <div class="stat"><strong>∞</strong><span>还在生长</span></div>
+  </section>
+
+  <section class="shell section">
+    <div class="section-head">
+      <div><span class="eyebrow">Roadmap</span><h2 class="section-title">三段成长旅程</h2></div>
+      <p class="section-desc">成长不是一条笔直的线。它更像不断扩大的圆：先照顾自己，再创造作品，最后连接世界。</p>
+    </div>
+    <div class="stage-grid">
+      {stages.map((stage) => (
+        <article class="stage-card">
+          <span class="stage-number">{stage.no}</span>
+          <h3>{stage.title}</h3>
+          <p>{stage.text}</p>
+          <div class="stage-meta"><span>{stage.meta}</span><span>↗</span></div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="shell section section-tight">
+    <div class="section-head">
+      <div><span class="eyebrow">Notes from the road</span><h2 class="section-title">路上的新发现</h2></div>
+      <a class="button button-secondary" href={`${base}posts/`}>全部文章 →</a>
+    </div>
+    <div class="posts-grid">
+      <a class="post-featured" href={`${base}posts/${posts[0].slug}/`}>
+        <span class="post-kicker">{posts[0].category} · {posts[0].date}</span>
+        <h3>{posts[0].title}</h3>
+        <div class="post-bottom"><p>{posts[0].excerpt}</p><span class="circle-link">↗</span></div>
+      </a>
+      <div class="post-list">
+        {posts.slice(1).map((post) => (
+          <a class="post-row" href={`${base}posts/${post.slug}/`}>
+            <small>{post.category} · {post.readTime}</small>
+            <h3>{post.title}</h3>
+            <p>{post.excerpt}</p>
+            <span class="read">阅读全文 →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="shell section">
+    <div class="quote">
+      <blockquote>“你不必看见整条楼梯，<br />只需要迈出第一步。”</blockquote>
+      <footer>— Martin Luther King Jr.</footer>
+    </div>
+  </section>
+</BaseLayout>
+
