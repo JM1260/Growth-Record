@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { posts } from '../../data/posts';
 
-const base = import.meta.env.BASE_URL;
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
 const categories = ['全部', ...new Set(posts.map((post) => post.category))];
 const categoryCounts = Object.fromEntries(
   categories.map((category) => [
