@@ -20,7 +20,7 @@ interface Props {
 }
 
 const { post, previous, next } = Astro.props;
-const base = import.meta.env.BASE_URL;
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
 ---
 
 <BaseLayout title={`${post.title}｜向光生长`} description={post.excerpt}>
