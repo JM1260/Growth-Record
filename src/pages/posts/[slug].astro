@@ -43,7 +43,7 @@ const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
       </div>
     </header>
 
-    <div class="article-shell shell">
+    <div class:list={['article-shell', 'shell', { 'without-toc': post.toc.length === 0 }]}>
       <div class="article-main">
         <div class="article-rich" set:html={post.content} />
 
