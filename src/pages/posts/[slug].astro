@@ -1,32 +1,97 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { posts } from '../../data/posts';
+import { posts, type Post } from '../../data/posts';
 
 export function getStaticPaths() {
-  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+  return posts.map((post, index) => ({
+    params: { slug: post.slug },
+    props: {
+      post,
+      previous: posts[index + 1] ?? null,
+      next: posts[index - 1] ?? null,
+    },
+  }));
 }
 
-const { post } = Astro.props;
+interface Props {
+  post: Post;
+  previous: Post | null;
+  next: Post | null;
+}
+
+const { post, previous, next } = Astro.props;
 const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout title={`${post.title}｜向光生长`} description={post.excerpt}>
-  <article class="article">
-    <header class="article-header">
-      <a href={`${base}posts/`} class="eyebrow">返回文章</a>
+  <div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
+
+  <article class="article-detail">
+    <header class="article-detail-header shell">
+      <a href={`${base}posts/`} class="back-link">← 返回全部文章</a>
+      <div class="article-detail-meta">
+        <span>{post.category}</span>
+        <time datetime={post.date.replaceAll('.', '-')}>{post.date}</time>
+        <span>阅读约 {post.readTime}</span>
+      </div>
       <h1>{post.title}</h1>
-      <p class="article-lead">{post.lead}</p>
-      <div class="mt-6 flex gap-4 text-sm text-stone-500"><span>{post.category}</span><span>·</span><span>{post.date}</span><span>·</span><span>{post.readTime}</span></div>
+      <p>{post.excerpt}</p>
+      <div class="article-byline">
+        <span class="author-avatar" aria-hidden="true">JM</span>
+        <div><strong>{post.author}</strong><small>记录学习，也记录成长</small></div>
+        <a href={post.sourceUrl} target="_blank" rel="noreferrer">在 CSDN 查看原文 ↗</a>
+      </div>
     </header>
-    <div class="article-body">
-      {post.sections.map((section) => (
-        <section>
-          <h2>{section.heading}</h2>
-          {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
-        </section>
-      ))}
-      <aside class="article-note">{post.note}</aside>
+
+    <div class="article-shell shell">
+      <div class="article-main">
+        <div class="article-rich" set:html={post.content} />
+
+        <div class="article-source-note">
+          <span>↗</span>
+          <div>
+            <strong>本文同步自我的 CSDN 博客</strong>
+            <p>正文内容与原文保持一致，本站仅重新整理了阅读样式。</p>
+          </div>
+          <a href={post.sourceUrl} target="_blank" rel="noreferrer">查看原文</a>
+        </div>
+
+        <nav class="article-pagination" aria-label="文章翻页">
+          {previous ? (
+            <a href={`${base}posts/${previous.slug}/`}>
+              <small>上一篇</small><strong>{previous.title}</strong>
+            </a>
+          ) : <span />}
+          {next && (
+            <a class="next" href={`${base}posts/${next.slug}/`}>
+              <small>下一篇</small><strong>{next.title}</strong>
+            </a>
+          )}
+        </nav>
+      </div>
+
+      {post.toc.length > 0 && (
+        <aside class="article-aside">
+          <nav class="toc" aria-label="文章目录">
+            <span>本页目录</span>
+            {post.toc.map((item) => (
+              <a class:list={{ nested: item.level === 'h3' }} href={`#${item.id}`}>{item.text}</a>
+            ))}
+          </nav>
+        </aside>
+      )}
     </div>
   </article>
+
+  <script>
+    const bar = document.querySelector<HTMLElement>('#reading-progress-bar');
+    const updateProgress = () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
+      if (bar) bar.style.transform = `scaleX(${progress})`;
+    };
+    updateProgress();
+    window.addEventListener('scroll', updateProgress, { passive: true });
+  </script>
 </BaseLayout>
 
