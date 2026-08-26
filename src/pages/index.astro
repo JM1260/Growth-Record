@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { posts } from '../data/posts';
 
-const base = import.meta.env.BASE_URL;
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
 const stages = [
   { no: '01', title: '建立内核', text: '重新认识自己，建立稳定的能量、时间与行动系统。', meta: '习惯 · 专注 · 复盘' },
   { no: '02', title: '积累能力', text: '把好奇心变成作品，让知识从“知道”走向“做到”。', meta: '学习 · 输出 · 项目' },
