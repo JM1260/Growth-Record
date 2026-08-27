@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "growth-record-admin",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-27",
+  "vars": {
+    "GITHUB_OWNER": "JM1260",
+    "GITHUB_REPO": "Growth-Record",
+    "GITHUB_BRANCH": "main",
+    "ALLOWED_ORIGIN": "https://jm1260.github.io",
+    "SITE_URL": "https://jm1260.github.io/Growth-Record"
+  }
+}

@@ -12,12 +12,12 @@ const categoryCounts = Object.fromEntries(
 );
 ---
 
-<BaseLayout title="文章｜向光生长" description={`收录 ${posts.length} 篇来自 JM_life CSDN 的技术学习与成长随笔。`}>
+<BaseLayout title="文章｜向光生长" description={`收录 ${posts.length} 篇技术学习与成长随笔。`}>
   <section class="shell blog-hero">
     <div>
       <span class="eyebrow">Writing archive</span>
       <h1>文章。</h1>
-      <p>技术、阅读与生活的长期记录。这里完整同步了我在 CSDN 发布的文章，并重新整理成更舒适的阅读体验。</p>
+      <p>技术、阅读与生活的长期记录。这里既有从 CSDN 同步的旧文章，也有在本站持续写下的新内容。</p>
     </div>
     <div class="archive-stat" aria-label={`共 ${posts.length} 篇文章`}>
       <strong>{String(posts.length).padStart(2, '0')}</strong>
@@ -110,4 +110,3 @@ const categoryCounts = Object.fromEntries(
     });
   </script>
 </BaseLayout>
-

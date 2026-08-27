@@ -1,0 +1,3 @@
+GITHUB_CLIENT_ID=replace_me
+GITHUB_CLIENT_SECRET=replace_me
+SESSION_SECRET=replace_with_a_long_random_secret

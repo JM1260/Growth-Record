@@ -21,6 +21,7 @@ interface Props {
 
 const { post, previous, next } = Astro.props;
 const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
+const Content = post.source === 'native' ? post.Content : null;
 ---
 
 <BaseLayout title={`${post.title}｜向光生长`} description={post.excerpt}>
@@ -39,22 +40,33 @@ const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
       <div class="article-byline">
         <span class="author-avatar" aria-hidden="true">JM</span>
         <div><strong>{post.author}</strong><small>记录学习，也记录成长</small></div>
-        <a href={post.sourceUrl} target="_blank" rel="noreferrer">在 CSDN 查看原文 ↗</a>
+        {post.source === 'csdn'
+          ? <a href={post.sourceUrl} target="_blank" rel="noreferrer">在 CSDN 查看原文 ↗</a>
+          : <span class="native-badge">原创发布于本站</span>}
       </div>
     </header>
 
     <div class:list={['article-shell', 'shell', { 'without-toc': post.toc.length === 0 }]}>
       <div class="article-main">
-        <div class="article-rich" set:html={post.content} />
-
-        <div class="article-source-note">
-          <span>↗</span>
-          <div>
-            <strong>本文同步自我的 CSDN 博客</strong>
-            <p>正文内容与原文保持一致，本站仅重新整理了阅读样式。</p>
-          </div>
-          <a href={post.sourceUrl} target="_blank" rel="noreferrer">查看原文</a>
+        <div class="article-rich">
+          {post.source === 'native' && Content ? <Content /> : post.source === 'csdn' ? <Fragment set:html={post.content} /> : null}
         </div>
+
+        {post.source === 'csdn' ? (
+          <div class="article-source-note">
+            <span>↗</span>
+            <div>
+              <strong>本文同步自我的 CSDN 博客</strong>
+              <p>正文内容与原文保持一致，本站仅重新整理了阅读样式。</p>
+            </div>
+            <a href={post.sourceUrl} target="_blank" rel="noreferrer">查看原文</a>
+          </div>
+        ) : (
+          <div class="article-source-note native-note">
+            <span>✦</span>
+            <div><strong>写于「向光生长」</strong><p>这是一篇在本站创作并首发的原创文章。</p></div>
+          </div>
+        )}
 
         <nav class="article-pagination" aria-label="文章翻页">
           {previous ? (
@@ -94,4 +106,3 @@ const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
     window.addEventListener('scroll', updateProgress, { passive: true });
   </script>
 </BaseLayout>
-
