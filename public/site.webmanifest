@@ -1,0 +1,10 @@
+{
+  "name": "向光生长",
+  "short_name": "向光生长",
+  "description": "记录学习、创造与生活的长期成长路线。",
+  "start_url": "/Growth-Record/",
+  "display": "standalone",
+  "background_color": "#f4f1e8",
+  "theme_color": "#234c37",
+  "icons": []
+}

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { posts } from '../data/posts';
+import { series } from '../data/series';
 
 const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
 const stages = [
@@ -37,9 +38,9 @@ const stages = [
   </section>
 
   <section class="shell stats" aria-label="成长数据">
-    <div class="stat"><strong>126</strong><span>天持续记录</span></div>
-    <div class="stat"><strong>48</strong><span>篇公开笔记</span></div>
-    <div class="stat"><strong>08</strong><span>个完成项目</span></div>
+    <div class="stat"><strong>{String(posts.length).padStart(2, '0')}</strong><span>篇公开文章</span></div>
+    <div class="stat"><strong>{String(posts.filter((post) => post.category === 'Python 学习').length).padStart(2, '0')}</strong><span>篇 Python 笔记</span></div>
+    <div class="stat"><strong>{String(series.length).padStart(2, '0')}</strong><span>条专题路径</span></div>
     <div class="stat"><strong>∞</strong><span>还在生长</span></div>
   </section>
 
@@ -91,4 +92,3 @@ const stages = [
     </div>
   </section>
 </BaseLayout>
-

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { posts, type Post } from '../../data/posts';
+import { getRelatedPosts, posts, type Post } from '../../data/posts';
+import { findSeriesForPost, type PostSeries } from '../../data/series';
 
 export function getStaticPaths() {
   return posts.map((post, index) => ({
@@ -9,6 +10,8 @@ export function getStaticPaths() {
       post,
       previous: posts[index + 1] ?? null,
       next: posts[index - 1] ?? null,
+      related: getRelatedPosts(post),
+      postSeries: findSeriesForPost(post) ?? null,
     },
   }));
 }
@@ -17,19 +20,42 @@ interface Props {
   post: Post;
   previous: Post | null;
   next: Post | null;
+  related: Post[];
+  postSeries: PostSeries | null;
 }
 
-const { post, previous, next } = Astro.props;
+const { post, previous, next, related, postSeries } = Astro.props;
 const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
 const Content = post.source === 'native' ? post.Content : null;
+const articleUrl = new URL(`${base}posts/${post.slug}/`, Astro.site).href;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.title,
+  description: post.excerpt,
+  datePublished: post.date.replaceAll('.', '-'),
+  author: { '@type': 'Person', name: post.author },
+  publisher: { '@type': 'Organization', name: '向光生长' },
+  mainEntityOfPage: articleUrl,
+  keywords: post.tags.join(', '),
+  inLanguage: 'zh-CN',
+};
 ---
 
-<BaseLayout title={`${post.title}｜向光生长`} description={post.excerpt}>
+<BaseLayout
+  title={`${post.title}｜向光生长`}
+  description={post.excerpt}
+  type="article"
+  publishedTime={post.date.replaceAll('.', '-')}
+  tags={post.tags}
+  schema={schema}
+>
   <div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
 
   <article class="article-detail">
     <header class="article-detail-header shell">
       <a href={`${base}posts/`} class="back-link">← 返回全部文章</a>
+      {postSeries && <a class="series-pill" href={`${base}series/#${postSeries.slug}`}>{postSeries.eyebrow} · {postSeries.title} ↗</a>}
       <div class="article-detail-meta">
         <span>{post.category}</span>
         <time datetime={post.date.replaceAll('.', '-')}>{post.date}</time>
@@ -57,7 +83,7 @@ const Content = post.source === 'native' ? post.Content : null;
             <span>↗</span>
             <div>
               <strong>本文同步自我的 CSDN 博客</strong>
-              <p>正文内容与原文保持一致，本站仅重新整理了阅读样式。</p>
+              <p>内容已清理并重新排版；如需核对，可前往原文。</p>
             </div>
             <a href={post.sourceUrl} target="_blank" rel="noreferrer">查看原文</a>
           </div>
@@ -66,6 +92,21 @@ const Content = post.source === 'native' ? post.Content : null;
             <span>✦</span>
             <div><strong>写于「向光生长」</strong><p>这是一篇在本站创作并首发的原创文章。</p></div>
           </div>
+        )}
+
+        {related.length > 0 && (
+          <section class="related-posts" aria-labelledby="related-title">
+            <div class="related-head"><span>Keep exploring</span><h2 id="related-title">继续阅读</h2></div>
+            <div class="related-grid">
+              {related.map((item, index) => (
+                <a href={`${base}posts/${item.slug}/`}>
+                  <small>{String(index + 1).padStart(2, '0')} · {item.category}</small>
+                  <strong>{item.title}</strong>
+                  <span>{item.readTime} →</span>
+                </a>
+              ))}
+            </div>
+          </section>
         )}
 
         <nav class="article-pagination" aria-label="文章翻页">
@@ -104,5 +145,23 @@ const Content = post.source === 'native' ? post.Content : null;
     };
     updateProgress();
     window.addEventListener('scroll', updateProgress, { passive: true });
+
+    document.querySelectorAll<HTMLElement>('.article-rich pre').forEach((pre) => {
+      if (pre.parentElement?.classList.contains('code-block')) return;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-block';
+      pre.before(wrapper);
+      wrapper.append(pre);
+      const button = document.createElement('button');
+      button.className = 'code-copy';
+      button.type = 'button';
+      button.textContent = '复制';
+      button.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(pre.textContent ?? '');
+        button.textContent = '已复制';
+        window.setTimeout(() => { button.textContent = '复制'; }, 1500);
+      });
+      wrapper.append(button);
+    });
   </script>
 </BaseLayout>

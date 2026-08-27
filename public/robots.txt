@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /Growth-Record/admin/
+
+Sitemap: https://jm1260.github.io/Growth-Record/sitemap.xml

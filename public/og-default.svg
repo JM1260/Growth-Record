@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f4f1e8"/>
+  <circle cx="1085" cy="65" r="235" fill="#dbea7b" opacity=".9"/>
+  <path d="M0 500C280 420 430 610 725 520s345-65 475-25v135H0Z" fill="#234c37"/>
+  <rect x="76" y="72" width="58" height="58" rx="17" fill="#234c37" transform="rotate(-4 105 101)"/>
+  <text x="105" y="113" text-anchor="middle" fill="#dbea7b" font-family="Arial,sans-serif" font-size="29" font-weight="700">↗</text>
+  <text x="154" y="110" fill="#17211b" font-family="Arial,sans-serif" font-size="31" font-weight="700">向光生长</text>
+  <rect x="76" y="182" width="58" height="5" rx="2.5" fill="#ff725e"/>
+  <text x="76" y="290" fill="#17211b" font-family="Georgia,'Noto Serif SC',serif" font-size="82">把成长，走成一条路。</text>
+  <text x="80" y="370" fill="#657068" font-family="Arial,'Noto Sans SC',sans-serif" font-size="29" letter-spacing="6">学习 · 创造 · 生活</text>
+  <text x="80" y="575" fill="#fffdf8" font-family="Arial,sans-serif" font-size="24">jm1260.github.io/Growth-Record</text>
+</svg>

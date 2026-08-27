@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { series } from '../../data/series';
+
+const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
+---
+
+<BaseLayout title="专题｜向光生长" description="按成长主题整理的系列文章，让零散阅读变成一条清晰路径。">
+  <section class="shell series-hero">
+    <span class="eyebrow">Curated paths</span>
+    <h1>从一篇文章，<br />走进一条路径。</h1>
+    <p>不再只是按时间堆叠文章，而是把相近的学习与思考整理成专题。你可以从任意一站出发，按自己的节奏继续。</p>
+  </section>
+
+  <section class="shell series-list" aria-label="文章专题">
+    {series.map((item, seriesIndex) => (
+      <article class:list={['series-card', `accent-${item.accent}`]} id={item.slug}>
+        <div class="series-card-intro">
+          <span class="series-index">{String(seriesIndex + 1).padStart(2, '0')}</span>
+          <small>{item.eyebrow}</small>
+          <h2>{item.title}</h2>
+          <p>{item.description}</p>
+          <strong>{item.posts.length} 篇文章</strong>
+        </div>
+        <ol class="series-articles">
+          {item.posts.map((post, index) => (
+            <li>
+              <a href={`${base}posts/${post.slug}/`}>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <div><strong>{post.title}</strong><small>{post.date} · {post.readTime}</small></div>
+                <b>↗</b>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </article>
+    ))}
+  </section>
+</BaseLayout>

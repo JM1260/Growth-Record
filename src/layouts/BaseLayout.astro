@@ -4,24 +4,42 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  publishedTime?: string;
+  tags?: string[];
+  schema?: Record<string, unknown>;
 }
 
 const {
   title = '向光生长｜个人成长路线',
   description = '记录学习、创造与生活的长期成长路线。',
+  image = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/og-default.png`,
+  type = 'website',
+  publishedTime,
+  tags = [],
+  schema,
 } = Astro.props;
 const base = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/`;
 const pathname = Astro.url.pathname;
-const canonicalPath = pathname.startsWith(base)
-  ? pathname
-  : `${base}${pathname.replace(/^\//, '')}`;
+const canonicalPath = pathname.startsWith(base) ? pathname : `${base}${pathname.replace(/^\//, '')}`;
 const canonical = new URL(canonicalPath, Astro.site);
+const socialImage = new URL(image, Astro.site);
 const links = [
   { href: base, label: '首页' },
   { href: `${base}roadmap/`, label: '成长路线' },
+  { href: `${base}series/`, label: '专题' },
   { href: `${base}posts/`, label: '文章' },
   { href: `${base}about/`, label: '关于' },
 ];
+const defaultSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: '向光生长',
+  url: new URL(base, Astro.site).href,
+  description,
+  inLanguage: 'zh-CN',
+};
 ---
 
 <!doctype html>
@@ -33,11 +51,23 @@ const links = [
     <meta name="description" content={description} />
     <meta name="theme-color" content="#f4f1e8" />
     <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title="向光生长 RSS" href={`${base}rss.xml`} />
+    <link rel="manifest" href={`${base}site.webmanifest`} />
     <title>{title}</title>
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="向光生长" />
+    <meta property="og:locale" content="zh_CN" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+    {type === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {type === 'article' && tags.map((tag) => <meta property="article:tag" content={tag} />)}
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(schema || defaultSchema)} />
   </head>
   <body>
     <header class="shell nav">
@@ -51,6 +81,16 @@ const links = [
         ))}
       </nav>
       <a class="nav-cta" href={`${base}roadmap/`}>查看进度</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="打开导航">
+        <span></span><span></span>
+      </button>
+      <nav class="mobile-menu" id="mobile-menu" aria-label="移动端导航" hidden>
+        {links.map((link, index) => (
+          <a href={link.href} aria-current={pathname === link.href ? 'page' : undefined}>
+            <small>{String(index + 1).padStart(2, '0')}</small><span>{link.label}</span><b>↗</b>
+          </a>
+        ))}
+      </nav>
     </header>
     <main>
       <slot />
@@ -59,7 +99,10 @@ const links = [
       <div class="shell">
         <div class="footer-top">
           <h2>慢慢来，<br />但一直向前。</h2>
-          <a class="button button-primary" href={`${base}roadmap/`}>继续这段旅程 <span>↗</span></a>
+          <div class="footer-actions">
+            <a class="button button-secondary" href={`${base}rss.xml`}>订阅 RSS</a>
+            <a class="button button-primary" href={`${base}roadmap/`}>继续这段旅程 <span>↗</span></a>
+          </div>
         </div>
         <div class="footer-bottom">
           <span>© 2026 向光生长</span>
@@ -67,6 +110,27 @@ const links = [
         </div>
       </div>
     </footer>
+
+    <script>
+      const toggle = document.querySelector<HTMLButtonElement>('#nav-toggle');
+      const menu = document.querySelector<HTMLElement>('#mobile-menu');
+      const closeMenu = () => {
+        if (!toggle || !menu) return;
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', '打开导航');
+        menu.hidden = true;
+        document.body.classList.remove('menu-open');
+      };
+      toggle?.addEventListener('click', () => {
+        if (!menu) return;
+        const opening = toggle.getAttribute('aria-expanded') !== 'true';
+        toggle.setAttribute('aria-expanded', String(opening));
+        toggle.setAttribute('aria-label', opening ? '关闭导航' : '打开导航');
+        menu.hidden = !opening;
+        document.body.classList.toggle('menu-open', opening);
+      });
+      menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+      window.addEventListener('keydown', (event) => event.key === 'Escape' && closeMenu());
+    </script>
   </body>
 </html>
-
